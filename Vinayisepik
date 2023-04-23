@@ -1,0 +1,26 @@
+local DODGE_DISTANCE = 10 -- Distance to dodge in the direction of the attack
+
+-- Function to handle when a part touches the character
+local function onPartTouch(part)
+    if part.Name == "Handle" and part.Parent:IsA("Tool") and part.Parent.ToolType == Enum.ToolType.Sword then
+        return -- Don't dodge swords
+    end
+
+    local character = part.Parent
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+
+    if humanoidRootPart and humanoidRootPart:IsA("BasePart") then
+        -- Calculate the direction of the attack
+        local direction = (humanoidRootPart.Position - script.Parent.HumanoidRootPart.Position).unit
+
+        -- Move the character's HumanoidRootPart in the direction of the attack
+        humanoidRootPart.CFrame = humanoidRootPart.CFrame + direction * DODGEDISTANCE
+    end
+end
+
+-- Connect the onPartTouch function to the Touched event of the character's parts
+for , part in ipairs(script.Parent:GetDescendants()) do
+    if part:IsA("BasePart") then
+        part.Touched:Connect(onPartTouch)
+    end
+end
